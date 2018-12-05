@@ -5,6 +5,9 @@ YOU ARE FREE DOWNLOAD, DISTRIBUTE, USE
 """
 
 import json,requests,csv # imports the dependencies
+from twilio.rest import Client # imports the twilio account
+account_sid = input("add sid") # add your acoount_sid (found in the twilio console)
+auth_token  = input("auth")# add your auth_token (found in consle)
 res=requests.get("https://api.coindesk.com/v1/bpi/currentprice.json") # downloads the required data in json
 res.raise_for_status() # checks for anomalies while downloading
 print("download success")
@@ -19,3 +22,14 @@ writer=csv.writer(file,delimiter="\t") # starts writing with tab space in betwee
 print("data written")
 writer.writerow([time,str(USD)+" USD",str(GBP)+" GBP",str(EUR)+" EUR"]) # appends new row to the exixting row
 file.close() # closes the file 
+"""
+This part will make necessary requests to send
+messages, 
+"""
+client = Client(account_sid, auth_token)
+message = client.messages.create(
+    to=input("your number"), 
+    from_=input("destination number"),
+    body="the current value of bit coin in USD is "+str(USD)+"$")
+
+print(message.sid)
